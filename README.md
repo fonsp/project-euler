@@ -1,2 +1,2 @@
-# project-euler
-testingg
+#Project Euler solutions
+Private repository, do not distribute.
