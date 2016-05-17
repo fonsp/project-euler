@@ -3,38 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EulerDotNet;
 
 namespace Problem_30
 {
 	public class Program
 	{
+		[STAThread]
 		static void Main(string[] args)
 		{
-			int[] digits = 
-			for(int a = 0; a < 10; a++)
+			long sum = 0;
+			for(long i = 11; i < 1000000; i++)
 			{
-				for(int b = a; b < 10; b++)
+				List<long> digits = EMath.GetDigits(i);
+				long num = 0;
+				foreach(int digit in digits)
 				{
-					for(int c = b; c < 10; c++)
-					{
-						for(int d = c; d < 10; d++)
-						{
-							for(int e = d; e < 10; e++)
-							{
-								int num = 
-							}
-						}
-					}
+					num += EMath.IntPow(digit, 5);
+				}
+				if(num == i)
+				{
+					Console.WriteLine(i);
+					sum += i;
 				}
 			}
 
-			Console.WriteLine("Press any key to exit...");
-			Console.ReadKey();
-		}
-
-		public static int f(int n)
-		{
-			return n * n * n * n * n;
+			EMisc.End(sum);
 		}
 	}
 }

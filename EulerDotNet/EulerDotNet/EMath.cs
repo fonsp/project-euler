@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,36 @@ namespace EulerDotNet
 	/// </summary>
 	public class EMath
 	{
+		public static bool IsPrime(decimal i)
+		{
+			if(i < 2)
+			{
+				return false;
+			}
+			if(i < 4)
+			{
+				return true;
+			}
+			if(i % 2 == 0 || i % 3 == 0)
+			{
+				return false;
+			}
+			decimal n = 0, x;
+			while(true)
+			{
+				x = 5 + 3 * n - (n % 2);
+				n++;
+				if(i % x == 0)
+				{
+					return false;
+				}
+				if(x * x > i)
+				{
+					return true;
+				}
+			}
+		}
+
 		public static bool IsPrime(long i)
 		{
 			if(i < 2)
@@ -98,6 +129,50 @@ namespace EulerDotNet
 		public static long HexagonalNumber(long n)
 		{
 			return n * (2 * n - 1);
+		}
+
+		public static List<long> GetDigits(long n)
+		{
+			List<long> output = new List<long>();
+			while(n > 0)
+			{
+				output.Add(n%10);
+				n /= 10;
+			}
+			return output;
+		}
+
+		public static long FromDigits(long[] digits)
+		{
+			long value = 0;
+			for(int i = 0; i < digits.Length; i++)
+			{
+				value *= 10;
+				value += digits[i];
+			}
+			return value;
+		}
+
+		public static decimal FromDigitsToDecimal(long[] digits)
+		{
+			decimal value = 0;
+			for(int i = 0; i < digits.Length; i++)
+			{
+				value *= 10;
+				value += digits[i];
+			}
+			return value;
+		}
+
+		public static long IntPow(long x, int y)
+		{
+			long result = x;
+			while(y > 1)
+			{
+				result *= x;
+				y--;
+			}
+			return result;
 		}
 	}
 
