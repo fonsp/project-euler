@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EulerDotNet;
 
 namespace Problem_37
 {
@@ -10,7 +12,7 @@ namespace Problem_37
 	{
 		static void Main(string[] args)
 		{
-			new Program();
+			new Program2();
 		}
 
 		private long[] left = new long[] { 2, 3, 5, 7 };
@@ -20,14 +22,14 @@ namespace Problem_37
 		private long found = 0;
 		private long sum = 0;
 		private long i = 10;
-		private int length = 2;
-		private int[] indices = new int[] { 0, 0 };
+		private long length = 2;
+		private long[] indices = new long[] { 0, 0 };
 		public Program()
 		{
 			while(found < 11)
 			{
 				i = left[indices[0]];
-				for(int x = 0; x < length - 2; x++)
+				for(long x = 0; x < length - 2; x++)
 				{
 					i *= 10;
 					i += middle[indices[1 + x]];
@@ -35,18 +37,22 @@ namespace Problem_37
 				i *= 10;
 				i += right[indices[length - 1]];
 
-				//Console.WriteLine(i);
+				if(i < 0)
+				{
+					Console.WriteLine(i);
+				}
 
 				Check();
 
 				bool done = false;
-				int pos = length - 1;
+				long pos = length - 1;
 				while(!done)
 				{
 					if(pos == -1)
 					{
 						length++;
-						indices = new int[length];
+						Console.WriteLine(length);
+						indices = new long[length];
 						done = true;
 						break;
 					}
@@ -69,7 +75,7 @@ namespace Problem_37
 
 		void Check()
 		{
-			if(!IsPrime(i))
+			if(!EMath.IsPrime(i))
 			{
 				i++;
 				return;
@@ -78,7 +84,7 @@ namespace Problem_37
 			long n = i / 10;
 			while(n > 0)
 			{
-				if(!IsPrime(n))
+				if(!EMath.IsPrime(n))
 				{
 					i += Power10(length);
 					return;
@@ -88,7 +94,7 @@ namespace Problem_37
 			}
 			for(long p = length - 1; p > 0; p--)
 			{
-				if(!IsPrime(i % Power10(p)))
+				if(!EMath.IsPrime(i % Power10(p)))
 				{
 					i++;
 					return;
@@ -100,8 +106,8 @@ namespace Problem_37
 			i++;
 		}
 
-		List<long> powers = new List<long>() { 1 };
-		long Power10(long power)
+		static List<long> powers = new List<long>() { 1 };
+		public static long Power10(long power)
 		{
 			while(powers.Count < power + 1)
 			{
@@ -110,35 +116,107 @@ namespace Problem_37
 			return powers[(int)power];
 		}
 
-		bool IsPrime(long i)
+		static List<decimal> decimalPowers = new List<decimal>() { 1 };
+		public static decimal DecimalPower10(long power)
 		{
-			if(i < 2)
+			while(decimalPowers.Count < power + 1)
 			{
-				return false;
+				decimalPowers.Add(10 * decimalPowers[powers.Count - 1]);
 			}
-			if(i < 4)
+			return decimalPowers[(int)power];
+		}
+	}
+
+	class Program2
+	{
+		private long found = 0;
+		private long length = 2;
+		private long[] digits = new long[] {1, 3, 7, 9};
+		private long[] number = new long[] {-1, -1};
+		
+		public Program2()
+		{
+			while(found < 11)
 			{
-				return true;
+				Check(lasti);
 			}
-			if(i % 2 == 0 || i % 3 == 0)
+			EMisc.End(0);
+		}
+
+		public int lasti = 0;
+
+		void Check(int i)
+		{
+			if(i == -1)
 			{
-				return false;
+				length++;
+				number = new long[length];
+				for(int x = 0; x < length; x++)
+				{
+					number[x] = -1;
+				}
+				if(found < 11)
+				{
+					lasti = 0;
+				}
+				return;
 			}
-			long n = 0, x;
-			while(true)
+			if(i == length)
 			{
-				x = 5 + 3 * n - (n % 2);
-				n++;
-				if(i % x == 0)
+				decimal n = EMath.FromDigitsToDecimal(number);
+				//Console.WriteLine(n);
+				if(CheckBackWards(n))
+				{
+					found++;
+					Console.WriteLine(n);
+					if(n == 373)
+					{
+						//Debugger.Break();
+					}
+				}
+				lasti = i - 1;
+				return;
+			}
+			if(number[i] == 9)
+			{
+				number[i] = -1;
+				lasti = i - 1;
+				return;
+			}
+			number[i] += 2;
+			if(i == 0)
+			{
+				if(number[i] == 4)
+				{
+					number[i] = 3;
+				}
+				if(number[i] == 1)
+				{
+					number[i] = 2;
+				}
+			}
+			if(EMath.IsPrime(EMath.FromDigitsToDecimal(number.Take(i + 1).ToArray())))
+			{
+				lasti = i + 1;
+			}
+		}
+
+		static bool CheckBackWards(decimal i)
+		{
+			decimal length = 0;
+			decimal x = i;
+			while(x > 0)
+			{
+				x /= 10;
+				length++;
+			}
+			for(decimal p = length - 1; p > 0; p--)
+			{
+				if(!EMath.IsPrime(i % Program.Power10((int)p)))
 				{
 					return false;
 				}
-				if(x * x > i)
-				{
-					return true;
-				}
 			}
-
 			return true;
 		}
 	}
