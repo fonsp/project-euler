@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -128,6 +129,23 @@ namespace EulerDotNet
 			return EData.primeList[index];
 		}
 
+		public static List<long> GetPrimeFactors(long n)
+		{
+			List<long> output = new List<long>();
+			int i = 0;
+			while(n > 1)
+			{
+				long p = GetPrime(i);
+				while(n % p == 0)
+				{
+					output.Add(p);
+					n /= p;
+				}
+				i++;
+			}
+			return output;
+		} 
+
 		public static long TriangularNumber(long n)
 		{
 			return n * (n + 1) / 2;
@@ -254,13 +272,22 @@ namespace EulerDotNet
 				n--;
 			}
 			return result;
-		}
+		} 
 	}
 
 	public class EMisc
 	{
+		public static Stopwatch stopwatch = new Stopwatch();
+		public static bool displayTime = false;
+
+		public static void StartStopwatch()
+		{
+			stopwatch.Start();
+			displayTime = true;
+		}
 		public static string ArrayToString<T>(T[] x)
 		{
+			// TODO: support List
 			if(x == null)
 			{
 				return null;
@@ -285,7 +312,15 @@ namespace EulerDotNet
 		public static void End<T>(T result)
 		{
 			Console.WriteLine();
-			Console.WriteLine("Solution: {0}", result);
+			if(displayTime)
+			{
+				stopwatch.Stop();
+				Console.WriteLine("Solution: {0}, solved in {1} ms", result, stopwatch.ElapsedMilliseconds);
+			}
+			else
+			{
+				Console.WriteLine("Solution: {0}", result);
+			}
 			try
 			{
 				Clipboard.SetText(result.ToString());
@@ -312,10 +347,10 @@ namespace EulerDotNet
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="array"></param>
-		/// <param name="i"></param>
-		/// <param name="n"></param>
+		/// <param name="dirs">A byte array of length n filled with zeroes</param>
+		/// <param name="n">Length of array and dirs</param>
 		/// <param name="minValue">Minimal value of the given type</param>
-		public static bool IteratePermutation<T>(T[] array, byte[] dirs, long i, long n, T minValue) where T : IComparable
+		public static bool IteratePermutation<T>(T[] array, byte[] dirs, long n, T minValue) where T : IComparable
 		{
 			int largestMobI = -1;
 			T largestMob = minValue;
@@ -356,6 +391,12 @@ namespace EulerDotNet
 				}
 			}
 			return true;
+		}
+
+		[Obsolete("Remove i parameter")]
+		public static bool IteratePermutation<T>(T[] array, byte[] dirs, long i, long n, T minValue) where T : IComparable
+		{
+			return IteratePermutation(array, dirs, n, minValue);
 		}
 	}
 }

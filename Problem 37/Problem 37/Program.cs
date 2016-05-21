@@ -13,6 +13,8 @@ namespace Problem_37
 		[STAThread]
 		static void Main(string[] args)
 		{
+			Console.ReadKey();
+			EMisc.StartStopwatch();
 			new Program2();
 		}
 
