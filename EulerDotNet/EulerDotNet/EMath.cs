@@ -26,6 +26,10 @@ namespace EulerDotNet
 			{
 				return false;
 			}
+			if(i == 5)
+			{
+				return true;
+			}
 			decimal n = 0, x;
 			while(true)
 			{
@@ -56,6 +60,10 @@ namespace EulerDotNet
 			{
 				return false;
 			}
+			if(i == 5)
+			{
+				return true;
+			}
 			long n = 0, x;
 			while(true)
 			{
@@ -85,6 +93,10 @@ namespace EulerDotNet
 			if(i % 2 == 0 || i % 3 == 0)
 			{
 				return false;
+			}
+			if(i == 5)
+			{
+				return true;
 			}
 			long n = 0, x;
 			while(true)
@@ -136,13 +148,24 @@ namespace EulerDotNet
 			List<long> output = new List<long>();
 			while(n > 0)
 			{
-				output.Add(n%10);
+				output.Add(n % 10);
 				n /= 10;
 			}
 			return output;
 		}
 
 		public static long FromDigits(long[] digits)
+		{
+			long value = 0;
+			for(int i = 0; i < digits.Length; i++)
+			{
+				value *= 10;
+				value += digits[i];
+			}
+			return value;
+		}
+
+		public static long FromDigits(int[] digits)
 		{
 			long value = 0;
 			for(int i = 0; i < digits.Length; i++)
@@ -166,11 +189,69 @@ namespace EulerDotNet
 
 		public static long IntPow(long x, int y)
 		{
+			if(y < 0)
+			{
+				throw new ArgumentException();
+			}
+			if(y == 0)
+			{
+				return 1;
+			}
 			long result = x;
 			while(y > 1)
 			{
 				result *= x;
 				y--;
+			}
+			return result;
+		}
+
+		public static bool IsPerfectSquare(long n)
+		{
+			if(n < 0)
+			{
+				return false;
+			}
+			switch((int)(n & 0xF))
+			{
+				case 0:
+				case 1:
+				case 4:
+				case 9:
+					long x = (long)Math.Sqrt(n);
+					return x * x == n;
+				default:
+					return false;
+			}
+		}
+
+		public static bool IsPerfectSquare(long n, out long root)
+		{
+			root = -1;
+			if(n < 0)
+			{
+				return false;
+			}
+			switch((int)(n & 0xF))
+			{
+				case 0:
+				case 1:
+				case 4:
+				case 9:
+					root = (long)Math.Sqrt(n);
+					return root * root == n;
+				default:
+					return false;
+			}
+		}
+
+		public static long Factorial(long n)
+		{
+			long result = 1;
+			while(n > 1)
+			{
+				result *= n;
+				n--;
 			}
 			return result;
 		}
@@ -217,6 +298,64 @@ namespace EulerDotNet
 
 			Console.ReadKey();
 			Environment.Exit(0);
+		}
+
+		public static void Swap<T>(ref T a, ref T b)
+		{
+			T temp = a;
+			a = b;
+			b = temp;
+		}
+
+		/// <summary>
+		/// Steinhaus-Johnson-Trotter algorithm iterates through all permutations of a given array by swapping two values on each iteration.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="array"></param>
+		/// <param name="i"></param>
+		/// <param name="n"></param>
+		/// <param name="minValue">Minimal value of the given type</param>
+		public static bool IteratePermutation<T>(T[] array, byte[] dirs, long i, long n, T minValue) where T : IComparable
+		{
+			int largestMobI = -1;
+			T largestMob = minValue;
+			int dir = 0;
+			for(int j = 0; j < n; j++)
+			{
+				T value = array[j];
+				if(j < n - 1 && dirs[j] == 1 && value.CompareTo(array[j + 1]) > 0)
+				{
+					if(value.CompareTo(largestMob) >= 0)
+					{
+						largestMob = value;
+						largestMobI = j;
+						dir = 1;
+					}
+				}
+				if(j > 0 && dirs[j] == 0 && value.CompareTo(array[j - 1]) > 0)
+				{
+					if(value.CompareTo(largestMob) >= 0)
+					{
+						largestMob = value;
+						largestMobI = j;
+						dir = -1;
+					}
+				}
+			}
+			if(largestMobI == -1)
+			{
+				return false;
+			}
+			Swap(ref array[largestMobI], ref array[largestMobI + dir]);
+			Swap(ref dirs[largestMobI], ref dirs[largestMobI + dir]);
+			for(int j = 0; j < n; j++)
+			{
+				if(array[j].CompareTo(largestMob) > 0)
+				{
+					dirs[j] = (byte) (dirs[j] ^ 1);
+				}
+			}
+			return true;
 		}
 	}
 }
