@@ -10,6 +10,7 @@ namespace Problem_37
 {
 	class Program
 	{
+		[STAThread]
 		static void Main(string[] args)
 		{
 			new Program2();
@@ -116,19 +117,20 @@ namespace Problem_37
 			return powers[(int)power];
 		}
 
-		static List<decimal> decimalPowers = new List<decimal>() { 1 };
-		public static decimal DecimalPower10(long power)
+		static List<long> longPowers = new List<long>() { 1 };
+		public static long longPower10(long power)
 		{
-			while(decimalPowers.Count < power + 1)
+			while(longPowers.Count < power + 1)
 			{
-				decimalPowers.Add(10 * decimalPowers[powers.Count - 1]);
+				longPowers.Add(10 * longPowers[powers.Count - 1]);
 			}
-			return decimalPowers[(int)power];
+			return longPowers[(int)power];
 		}
 	}
 
 	class Program2
 	{
+		private long sum = 0;
 		private long found = 0;
 		private long length = 2;
 		private long[] digits = new long[] {1, 3, 7, 9};
@@ -140,7 +142,7 @@ namespace Problem_37
 			{
 				Check(lasti);
 			}
-			EMisc.End(0);
+			EMisc.End(sum);
 		}
 
 		public int lasti = 0;
@@ -163,16 +165,13 @@ namespace Problem_37
 			}
 			if(i == length)
 			{
-				decimal n = EMath.FromDigitsToDecimal(number);
+				long n = EMath.FromDigits(number);
 				//Console.WriteLine(n);
 				if(CheckBackWards(n))
 				{
 					found++;
 					Console.WriteLine(n);
-					if(n == 373)
-					{
-						//Debugger.Break();
-					}
+					sum += n;
 				}
 				lasti = i - 1;
 				return;
@@ -195,22 +194,22 @@ namespace Problem_37
 					number[i] = 2;
 				}
 			}
-			if(EMath.IsPrime(EMath.FromDigitsToDecimal(number.Take(i + 1).ToArray())))
+			if(EMath.IsPrime(EMath.FromDigits(number.Take(i + 1).ToArray())))
 			{
 				lasti = i + 1;
 			}
 		}
 
-		static bool CheckBackWards(decimal i)
+		static bool CheckBackWards(long i)
 		{
-			decimal length = 0;
-			decimal x = i;
+			long length = 0;
+			long x = i;
 			while(x > 0)
 			{
 				x /= 10;
 				length++;
 			}
-			for(decimal p = length - 1; p > 0; p--)
+			for(long p = length - 1; p > 0; p--)
 			{
 				if(!EMath.IsPrime(i % Program.Power10((int)p)))
 				{
