@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace EulerDotNet
 {
@@ -144,11 +142,60 @@ namespace EulerDotNet
 				i++;
 			}
 			return output;
-		} 
+		}
+
+		// a > b plz
+		public static bool AreRelativePrimes(long a, long b)
+		{
+			if(b > a)
+			{
+				return AreRelativePrimes(b, a);
+			}
+			if(b == 1)
+			{
+				return true;
+			}
+			if(a % b == 0)
+			{
+				return false;
+			}
+			long p = 2;
+			for(int i = 1; p < b; i++)
+			{
+				if(a % p == 0 && b % p == 0)
+				{
+					return false;
+				}
+				p = GetPrime(i);
+			}
+			return true;
+		}
+
+		public static long GreatesCommonDenomitor(long a, long b)
+		{
+			long c;
+			while(b != 0)
+			{
+				c = a % b;
+				a = b;
+				b = c;
+			}
+			return a;
+		}
 
 		public static long TriangularNumber(long n)
 		{
 			return n * (n + 1) / 2;
+		}
+
+		public static bool IsTriangular(long n)
+		{
+			long root;
+			if(!IsPerfectSquare(8 * n + 1, out root))
+			{
+				return false;
+			}
+			return (root - 1) % 2 == 0;
 		}
 
 		public static long PentagonalNumber(long n)
@@ -156,9 +203,29 @@ namespace EulerDotNet
 			return n * (3 * n - 1) / 2;
 		}
 
+		public static bool IsPentagonal(long n)
+		{
+			long root;
+			if(!IsPerfectSquare(24 * n + 1, out root))
+			{
+				return false;
+			}
+			return (1 - root) % 6 == 0;
+		}
+
 		public static long HexagonalNumber(long n)
 		{
 			return n * (2 * n - 1);
+		}
+
+		public static bool IsHexagonal(long n)
+		{
+			long root;
+			if(!IsPerfectSquare(8 * n + 1, out root))
+			{
+				return false;
+			}
+			return (1 - root) % 4 == 0;
 		}
 
 		public static List<long> GetDigits(long n)
@@ -272,131 +339,168 @@ namespace EulerDotNet
 				n--;
 			}
 			return result;
-		} 
-	}
-
-	public class EMisc
-	{
-		public static Stopwatch stopwatch = new Stopwatch();
-		public static bool displayTime = false;
-
-		public static void StartStopwatch()
-		{
-			stopwatch.Start();
-			displayTime = true;
-		}
-		public static string ArrayToString<T>(T[] x)
-		{
-			// TODO: support List
-			if(x == null)
-			{
-				return null;
-			}
-			if(x.Length == 0)
-			{
-				return "{}";
-			}
-			string output = "{" + x[0];
-			for(int i = 1; i < x.Length; i++)
-			{
-				output += ", " + x[i];
-			}
-			return output + "}";
 		}
 
-		public static void End<T>(T[] result)
+		public static bool IsPalindromic(DecimalNumber n)
 		{
-			End(ArrayToString(result));
-		}
-
-		public static void End<T>(T result)
-		{
-			Console.WriteLine();
-			if(displayTime)
+			for(int i = 0; i < (n.Count + 1) / 2; i++)
 			{
-				stopwatch.Stop();
-				Console.WriteLine("Solution: {0}, solved in {1} ms", result, stopwatch.ElapsedMilliseconds);
-			}
-			else
-			{
-				Console.WriteLine("Solution: {0}", result);
-			}
-			try
-			{
-				Clipboard.SetText(result.ToString());
-				Console.WriteLine("Copied to clipboard!");
-			}
-			catch(Exception e)
-			{
-				Console.WriteLine("Failed to copy to clipboard :(");
-			}
-
-			Console.ReadKey();
-			Environment.Exit(0);
-		}
-
-		public static void Swap<T>(ref T a, ref T b)
-		{
-			T temp = a;
-			a = b;
-			b = temp;
-		}
-
-		/// <summary>
-		/// Steinhaus-Johnson-Trotter algorithm iterates through all permutations of a given array by swapping two values on each iteration.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="array"></param>
-		/// <param name="dirs">A byte array of length n filled with zeroes</param>
-		/// <param name="n">Length of array and dirs</param>
-		/// <param name="minValue">Minimal value of the given type</param>
-		public static bool IteratePermutation<T>(T[] array, byte[] dirs, long n, T minValue) where T : IComparable
-		{
-			int largestMobI = -1;
-			T largestMob = minValue;
-			int dir = 0;
-			for(int j = 0; j < n; j++)
-			{
-				T value = array[j];
-				if(j < n - 1 && dirs[j] == 1 && value.CompareTo(array[j + 1]) > 0)
+				if(n[i] != n[n.Count - i - 1])
 				{
-					if(value.CompareTo(largestMob) >= 0)
-					{
-						largestMob = value;
-						largestMobI = j;
-						dir = 1;
-					}
-				}
-				if(j > 0 && dirs[j] == 0 && value.CompareTo(array[j - 1]) > 0)
-				{
-					if(value.CompareTo(largestMob) >= 0)
-					{
-						largestMob = value;
-						largestMobI = j;
-						dir = -1;
-					}
-				}
-			}
-			if(largestMobI == -1)
-			{
-				return false;
-			}
-			Swap(ref array[largestMobI], ref array[largestMobI + dir]);
-			Swap(ref dirs[largestMobI], ref dirs[largestMobI + dir]);
-			for(int j = 0; j < n; j++)
-			{
-				if(array[j].CompareTo(largestMob) > 0)
-				{
-					dirs[j] = (byte) (dirs[j] ^ 1);
+					return false;
 				}
 			}
 			return true;
 		}
 
-		[Obsolete("Remove i parameter")]
-		public static bool IteratePermutation<T>(T[] array, byte[] dirs, long i, long n, T minValue) where T : IComparable
+		public static bool IsPalindromic(long n)
 		{
-			return IteratePermutation(array, dirs, n, minValue);
+			return IsPalindromic(new DecimalNumber(n));
 		}
+
+		public static bool IsLychrel(DecimalNumber n, int maxIterations, bool verbose = false)
+		{
+			if(verbose) { Console.WriteLine("{0}, {1}", n, maxIterations); }
+			if(maxIterations < 0)
+			{
+				return true;
+			}
+			if(IsPalindromic(n))
+			{
+				return false;
+			}
+			return IsLychrel(n + n.Reversed(), maxIterations - 1);
+		}
+
+
+		// ReSharper disable once InconsistentNaming
+		public static long nCr(long n, long r)
+		{
+			if(r > n / 2)
+			{
+				return nCr(n, n - r);
+			}
+			long result = 1;
+			for(long i = 1 + n - r; i <= n; i++)
+			{
+				result *= i;
+			}
+			for(long i = 1; i <= r; i++)
+			{
+				result /= i;
+			}
+			return result;
+		}
+
+		// ReSharper disable once InconsistentNaming
+		public static double nCrApproximate(long n, long r)
+		{
+			if(r > n / 2)
+			{
+				return nCrApproximate(n, n - r);
+			}
+			double result = 1;
+			for(long i = 1 + n - r; i <= n; i++)
+			{
+				result *= i;
+			}
+			for(long i = 1; i <= r; i++)
+			{
+				result /= i;
+			}
+			return result;
+		}
+
+		public static double Sqrt2 = 1.41421356237309504880168872420969807856967187537694807317667973799;
+		public static double Sqrt2Half = 0.70710678118654752440084436210485;
+	}
+
+	public class DecimalNumber : List<int>
+	{
+		public DecimalNumber(long n)
+		{
+			while(n > 0)
+			{
+				Add((int)(n % 10));
+				n /= 10;
+			}
+		}
+		public DecimalNumber() : base()
+		{
+
+		}
+
+		public long ToLong()
+		{
+			long result = 0;
+			for(int i = 0; i < Count; i++)
+			{
+				result *= 10;
+				result += this[i];
+			}
+			return result;
+		}
+
+		public DecimalNumber Reversed()
+		{
+			Trim();
+			DecimalNumber result = new DecimalNumber();
+			for(int i = 0; i < Count; i++)
+			{
+				result.Add(this[Count - i - 1]);
+			}
+			return result;
+		}
+
+		public void Trim()
+		{
+			if(this.Count == 0)
+			{
+				return;
+			}
+			if(this[Count - 1] == 0)
+			{
+				RemoveAt(Count - 1);
+			}
+		}
+
+		public override string ToString()
+		{
+			string result = "";
+			for(int i = 0; i < Count; i++)
+			{
+				result += this[Count - i - 1];
+			}
+			return result;
+		}
+
+
+		public static DecimalNumber operator +(DecimalNumber a, DecimalNumber b)
+		{
+			int carry = 0;
+			DecimalNumber result = new DecimalNumber();
+			int aCount = a.Count;
+			int bCount = b.Count;
+
+			for(int i = 0; i < Math.Max(aCount, bCount); i++)
+			{
+				if(i < aCount)
+				{
+					carry += a[i];
+				}
+				if(i < bCount)
+				{
+					carry += b[i];
+				}
+				result.Add(carry % 10);
+				carry /= 10;
+			}
+			if(carry != 0)
+			{
+				result.Add(carry);
+			}
+			return result;
+		}
+
 	}
 }
