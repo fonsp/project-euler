@@ -451,60 +451,122 @@ namespace EulerDotNet
 			return result;
 		}
 
-		private static long[] A000041 = { 1, 1, 2, 3, 5, 7, 11, 15, 22, 30, 42, 56, 77, 101, 135, 176, 231, 297, 385, 490, 627, 792, 1002, 1255, 1575, 1958, 2436, 3010, 3718, 4565, 5604, 6842, 8349, 10143, 12310, 14883, 17977, 21637, 26015, 31185, 37338, 44583, 53174, 63261, 75175, 89134, 105558, 124754, 147273, 173525 };
-		// A000041
-		public static int NPartitions(long n)
+		public static int NPartitions(int n, int mod)
 		{
-			/*if(n < A000041.Length)
+			bool containsKey = NPcache.ContainsKey(mod);
+			List<int> cache;
+			if (!containsKey)
 			{
-				return A000041[n];
-			}*/
-			/*long total = 1;
-			for(long max = n - 1; max > 0; max--)
-			{
-				long remainder = n - max;
-				total += NPartitions(remainder, max);
+				cache = new List<int>();
+				NPcache.Add(mod, cache);
 			}
-			return total;*/
-
-			for(; lastN <= n; lastN++)
+			else
 			{
-				for(long max = 1; max <= lastN; max++)
-				{
-					NPCache.Add((NPartitions(lastN - max, max) + NPartitions(lastN, max - 1)) % 1000000);
-				}
+				cache = NPcache[mod];
 			}
-
-			return NPartitions(n, n);
+			for (int i = cache.Count + 2; i < n; i++)
+			{
+				nPartitions(i, mod, cache);
+			}
+			return nPartitions(n, mod, cache);
 		}
 
-		private static long lastN = 1;
-		private static List<int> NPCache = new List<int>(100000000);
-		private static int NPartitions(long n, long max)
+		//A000041
+		public static int NPartitions(int n)
 		{
-			if(max < 1 || n < 0)
+			return NPartitions(n, 0);
+		}
+
+		private static Dictionary<int, List<int>> NPcache = new Dictionary<int, List<int>>();
+
+		private static int nPartitions(int n, int mod, List<int> cache)
+		{
+			if (n < 0)
 			{
 				return 0;
 			}
-			if(max == 1 || n <= 1)
+			if (n < 2)
 			{
 				return 1;
 			}
-			if(max > n)
+			
+			if(n - 2 < cache.Count)
 			{
-				return NPartitions(n, n);
+				return cache[n - 2];
+			}
+			int sum = 0;
+			int k = 1;
+			int termA = 1, termB = 1;
+			while (termA > 0)
+			{
+				int threeKK = 3 * k * k;
+				termA = n - (threeKK + k) / 2;
+				termB = n - (threeKK - k) / 2;
+				if (k % 2 == 1)
+				{
+					sum += NPartitions(termA, mod) + NPartitions(termB, mod);
+				}
+				else
+				{
+					sum -= NPartitions(termA, mod) + NPartitions(termB, mod);
+				}
+				if(mod != 0)
+				{
+					sum = sum % mod;
+				}
+				k++;
+			}
+			if(mod != 0)
+			{
+				sum = sum < 0 ? sum + mod : sum;
+			}
+			cache.Add(sum);
+			return sum;
+		}
+
+		// A000041
+		/*public static int NPartitions(int n)
+		{
+
+			for(; lastN <= n; lastN++)
+			{
+				for(int max = 3; max < lastN; max++)
+				{
+					NPCache.Add((NPartitions(lastN - max, max) + NPartitions(lastN - 1, max - 1)) % 1000000);
+				}
 			}
 
-			return NPCache[(int)((n * (n - 1) / 2) + max - 1)];
+			int sum = 0;
+			for(int max = 1; max <= n; max++)
+			{
+				sum = (sum + NPartitions(n, max)) % 1000000;
+			}
+			return sum;
+		}
+
+		private static int lastN = 1;
+		private static List<int> NPCache = new List<int>();
+		public static int NPartitions(int n, int max)
+		{
+			if(max < 1 || max > n || n < 0)
+			{
+				return 0;
+			}
+			if(max == 1 || n <= 1 || max == n)
+			{
+				return 1;
+			}
+			if(max == 2)
+			{
+				return n / 2;
+			}
+			return (NPartitions(n - max, max) + NPartitions(n - 1, max - 1))%1000000;
+			return NPCache[(int)(((n-4) * (n - 3) / 2) + (max - 3))];
 
 
 			long sum = 0;
-			/*for(long numOfMaxBlocks = n / max; numOfMaxBlocks >= 0; numOfMaxBlocks--)
-			{
-				sum += NPartitions(n - numOfMaxBlocks * max, max - 1);
-			}*/
 			return NPartitions(n - max, max) + NPartitions(n, max - 1);
-		}
+		}*/
 
 		public static double Sqrt2 = 1.41421356237309504880168872420969807856967187537694807317667973799;
 		public static double Sqrt2Half = 0.70710678118654752440084436210485;
