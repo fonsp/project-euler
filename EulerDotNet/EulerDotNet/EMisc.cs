@@ -67,7 +67,7 @@ namespace EulerDotNet
 			{
 				Console.WriteLine("Solution: {0}", result);
 			}
-			Console.WriteLine(CopyToClipboard(result)? "Copied to clipboard!": "Failed to copy to clipboard :(");
+			Console.WriteLine(CopyToClipboard(result) ? "Copied to clipboard!" : "Failed to copy to clipboard :(");
 
 			Console.ReadKey();
 			Environment.Exit(0);
@@ -89,8 +89,7 @@ namespace EulerDotNet
 			{
 				Clipboard.SetText(data.ToString());
 				return true;
-			}
-			catch(Exception e)
+			} catch(Exception e)
 			{
 				return false;
 			}
@@ -165,9 +164,10 @@ namespace EulerDotNet
 	{
 		public readonly int nThreads;
 		public readonly Func<long, long> rangeMethod;
-		public readonly Func<T, long> listMethod; 
+		public readonly Func<T, long> listMethod;
 		public long min, max;
-		public IList<T> inputList; 
+		public IList<T> inputList;
+		public bool verbose = false;
 		private long[] sums;
 		private Thread[] pool;
 
@@ -177,7 +177,10 @@ namespace EulerDotNet
 			{
 				sums[threadNum] += rangeMethod(i + min);
 			}
-			Console.WriteLine("{0} done", threadNum);
+			if(verbose)
+			{
+				Console.WriteLine("{0} done", threadNum);
+			}
 		}
 
 		private void DoWorkList(int threadNum)
@@ -186,7 +189,10 @@ namespace EulerDotNet
 			{
 				sums[threadNum] += listMethod(inputList[i]);
 			}
-			Console.WriteLine("{0} done", threadNum);
+			if(verbose)
+			{
+				Console.WriteLine("{0} done", threadNum);
+			}
 		}
 
 		public MultiThreader(int nThreads, Func<long, long> method, long min, long max)
@@ -210,7 +216,7 @@ namespace EulerDotNet
 			this.listMethod = method;
 			this.inputList = inputList;
 			pool = new Thread[nThreads];
-			
+
 			for(int i = 0; i < nThreads; i++)
 			{
 				int threadNum = i;
@@ -237,7 +243,7 @@ namespace EulerDotNet
 						i = nThreads;
 					}
 				}
-				Thread.Sleep(10);
+				Thread.Sleep(1);
 			}
 			return sums.Sum();
 		}
