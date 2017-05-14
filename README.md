@@ -1,2 +1,3 @@
-#Project Euler solutions
-Private repository, do not distribute.
+Project Euler solutions
+===
+Private development repository. Do not distribute.
