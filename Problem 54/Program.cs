@@ -71,14 +71,8 @@ public class Hand
 
 	public static bool operator >(Hand a, Hand b)
 	{
-		if(a.rank < b.rank)
-		{
-			return true;
-		}
-		if(a.rank > b.rank)
-		{
-			return false;
-		}
+		if(a.rank < b.rank)	return true;
+		if(a.rank > b.rank) return false;
 		return a.rankedValue > b.rankedValue;
 	}
 
