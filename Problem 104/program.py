@@ -1,7 +1,3 @@
-
-
-
-
 def lastDigitsPandigital(n):
     occured = [True] + [False]*9
     for i in range(9):
