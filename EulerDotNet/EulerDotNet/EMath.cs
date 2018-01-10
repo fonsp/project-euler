@@ -570,6 +570,84 @@ namespace EulerDotNet
 
 		public static double Sqrt2 = 1.41421356237309504880168872420969807856967187537694807317667973799;
 		public static double Sqrt2Half = 0.70710678118654752440084436210485;
+
+		/// <summary>
+		/// Converts a number in roman numerals to its integer value.
+		/// </summary>
+		/// <param name="roman">Roman numeral</param>
+		/// <returns>The integer value representen by the numeral.</returns>
+		static public int RomanToInt(string roman)
+		{
+			int n = 0;
+			int i = roman.Length - 1;
+			while (i > 0)
+			{
+				int a = GetRomanCharValue(roman[i]);
+				int b = GetRomanCharValue(roman[i - 1]);
+				if (b < a)
+				{
+					n += a - b;
+					i -= 2;
+				}
+				else
+				{
+					n += a;
+					i--;
+				}
+			}
+			if (i == 0)
+			{
+				n += GetRomanCharValue(roman[0]);
+			}
+			return n;
+		}
+
+		static public char[] RomanCharacters = { 'I', 'V', 'X', 'L', 'C', 'D', 'M' };
+
+		static private int GetRomanCharValue(char c)
+		{
+			switch (c)
+			{
+				case 'I':
+					return 1;
+				case 'V':
+					return 5;
+				case 'X':
+					return 10;
+				case 'L':
+					return 50;
+				case 'C':
+					return 100;
+				case 'D':
+					return 500;
+				case 'M':
+					return 1000;
+			}
+			return -1;
+		}
+
+		/// <summary>
+		/// Converts an integer to its Roman numeral representation, in minimal form.
+		/// </summary>
+		/// <param name="n"></param>
+		/// <returns></returns>
+		static public string IntToRoman(int n)
+		{
+			string output = "";
+			string[] numerals = new string[] { "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX" };
+			foreach (string numeral in numerals)
+			{
+				int bound = RomanToInt(numeral);
+				while (n >= bound)
+				{
+					n -= bound;
+					output += numeral;
+				}
+			}
+			return output + finalRomans[n];
+		}
+
+		static private string[] finalRomans = new string[] { "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII" };
 	}
 
 	public class DecimalNumber : List<int>
@@ -658,6 +736,5 @@ namespace EulerDotNet
 			}
 			return result;
 		}
-
 	}
 }
