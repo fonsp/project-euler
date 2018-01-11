@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Problem 357", "Problem 357\Problem 357.csproj", "{7DBD8F60-4D43-4733-8AF3-1BDBBE8EDB89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EulerDotNet", "..\EulerDotNet\EulerDotNet\EulerDotNet.csproj", "{2ECC6AF1-68DD-41E6-9CAD-11A249031267}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7DBD8F60-4D43-4733-8AF3-1BDBBE8EDB89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DBD8F60-4D43-4733-8AF3-1BDBBE8EDB89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DBD8F60-4D43-4733-8AF3-1BDBBE8EDB89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DBD8F60-4D43-4733-8AF3-1BDBBE8EDB89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ECC6AF1-68DD-41E6-9CAD-11A249031267}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ECC6AF1-68DD-41E6-9CAD-11A249031267}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ECC6AF1-68DD-41E6-9CAD-11A249031267}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ECC6AF1-68DD-41E6-9CAD-11A249031267}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D7566E6B-F8D7-4766-94F4-6BF0EFFF0AC6}
+	EndGlobalSection
+EndGlobal

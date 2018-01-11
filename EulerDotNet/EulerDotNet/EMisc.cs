@@ -158,6 +158,25 @@ namespace EulerDotNet
 		{
 			return IteratePermutation(array, dirs, n, minValue);
 		}
+
+		public static IEnumerable<List<T>> Subsets<T>(IEnumerable<T> input)
+		{
+			T first = input.First();
+			IEnumerable<T> tail = input.Skip(1);
+			if(tail.Any())
+			{
+				foreach(var s in Subsets(tail))
+				{
+					yield return s;
+					yield return s.Union(new T[] { first }).ToList();
+				}
+			}
+			else
+			{
+				yield return new List<T>();
+				yield return new List<T>() { first };
+			}
+		}
 	}
 
 	public class MultiThreader<T>
