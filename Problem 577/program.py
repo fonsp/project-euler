@@ -1,3 +1,8 @@
+'''
+This isn't working: the rotated lattice in not shaped like a triangle.
+'''
+
+
 def H(n):
     counter = 0
     d = 1
